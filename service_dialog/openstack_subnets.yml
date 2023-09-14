@@ -1,41 +1,51 @@
-- name: param_var_openstack_subnets
-  description: Subnet to be selected in OpenStack
-  type: DialogFieldDropDownList
-  data_type: string
-  notes: 
-  notes_display: 
-  display: edit
-  display_method: 
-  display_method_options: {}
-  required: true
-  required_method: 
-  required_method_options: {}
-  default_value: ''
-  values: 
-  values_method: fetch_openstack_subnets
-  values_method_options: {}
-  options:
-    :protected: false
-    :show_past_days: false
-    :force_multi_value: false
-  label: OpenStack Subnet
-  position: 4
-  validator_type: 
-  validator_rule: 
-  reconfigurable: false
-  dynamic: true
-  show_refresh_button: true
-  load_values_on_init: true
-  read_only: false
-  auto_refresh: false
-  trigger_auto_refresh: false
-  visible: true
-  resource_action:
-    action: 
-    resource_type: DialogField
-    ae_namespace: 
-    ae_class: 
-    ae_instance: 
-    ae_message: 
-    ae_attributes: {}
-  dialog_field_responders: []
+---
+- name: CloudForms Automate Method Conversion
+  hosts: localhost
+  vars:
+    provider_url: 'https://192.168.150.77/api/providers'
+    tenant_url: 'https://192.168.150.77/api/tenants'
+    network_url: 'https://192.168.150.77/api/cloud_networks'
+    tenant_category: 'tenant'
+  tasks:
+    - name: Get provider details
+      uri:
+        url: "{{ provider_url }}"
+        method: GET
+        user: 'admin'
+        password: 'smartvm'
+        force_basic_auth: yes
+        status_code: 200
+      register: provider_result
+
+    - name: Get tenant details
+      uri:
+        url: "{{ tenant_url }}"
+        method: GET
+        user: 'admin'
+        password: 'smartvm'
+        force_basic_auth: yes
+        status_code: 200
+      register: tenant_result
+
+    - name: Get cloud network details
+      uri:
+        url: "{{ network_url }}"
+        method: GET
+        user: 'admin'
+        password: 'smartvm'
+        force_basic_auth: yes
+        status_code: 200
+      register: network_result
+
+    - name: Build dialog hash
+      set_fact:
+        dialog_hash: >
+          {%- set dh = {} -%}
+          {%- for network in network_result.json.resources -%}
+            {%- set _ = dh.update({network.id: network.name}) -%}
+          {%- endfor -%}
+          {{ dh }}
+      
+    - name: Display dialog hash
+      debug:
+        var: dialog_hash
