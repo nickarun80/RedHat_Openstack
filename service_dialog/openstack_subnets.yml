@@ -12,7 +12,7 @@
         url: "{{ provider_url }}"
         method: GET
         user: 'admin'
-        password: 'admin'
+        password: 'smartvm'
         force_basic_auth: yes
         status_code: 200
       register: provider_result
@@ -22,7 +22,7 @@
         url: "{{ tenant_url }}"
         method: GET
         user: 'admin'
-        password: 'admin'
+        password: 'smartvm'
         force_basic_auth: yes
         status_code: 200
       register: tenant_result
@@ -32,7 +32,7 @@
         url: "{{ network_url }}"
         method: GET
         user: 'admin'
-        password: 'admin'
+        password: 'smartvm'
         force_basic_auth: yes
         status_code: 200
       register: network_result
