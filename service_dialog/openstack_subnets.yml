@@ -48,4 +48,4 @@
       
     - name: Display dialog hash
       debug:
-        var: dialog_hash
+        var: dialog_hash.
